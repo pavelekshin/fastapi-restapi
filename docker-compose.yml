@@ -1,0 +1,49 @@
+version: '3.7'
+
+services:
+  app:
+    container_name: app_weather
+    image: app_weather_image
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/src
+    ports:
+      - "16000:8000"
+    depends_on:
+      - app_db
+      - app_redis
+  app_db:
+    container_name: app_weather_db
+    hostname: app_weather_db
+    image: postgres:16-alpine3.19
+    env_file:
+      - .env
+    volumes:
+      - app_pg_data:/var/lib/postgresql/data
+      - app_pg_data_backups:/backups
+    expose:
+      - 5432
+  app_redis:
+    image: redis:6.2-alpine
+    hostname: app_weather_redis
+    container_name: app_weather_redis
+    command:
+      - 'redis-server'
+      - '--requirepass myStrongPassword'
+    expose:
+      - 6339
+
+volumes:
+  app_pg_data:
+    driver: "local"
+  app_pg_data_backups:
+    driver: "local"
+
+networks:
+  default:
+    external: true
+    name: app_weather

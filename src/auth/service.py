@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta
 from typing import Any
 
 from pydantic import UUID4
@@ -20,7 +20,7 @@ async def create_user(user: AuthUser) -> dict[str, Any] | None:
             {
                 "email": user.email,
                 "password": hash_password(user.password),
-                "created_at": datetime.now(UTC),
+                "created_at": datetime.now(),
             }
         )
         .returning(auth_user)
@@ -50,7 +50,7 @@ async def create_refresh_token(
     insert_query = insert(refresh_tokens).values(
         uuid=uuid.uuid4(),
         refresh_token=refresh_token,
-        expires_at=datetime.now(UTC) + timedelta(seconds=auth_config.REFRESH_TOKEN_EXP),
+        expires_at=datetime.now() + timedelta(seconds=auth_config.REFRESH_TOKEN_EXP),
         user_id=user_id,
     )
     await execute(insert_query)
@@ -69,7 +69,7 @@ async def get_refresh_token(refresh_token: str) -> dict[str, Any] | None:
 async def expire_refresh_token(refresh_token_uuid: UUID4) -> None:
     update_query = (
         update(refresh_tokens)
-        .values(expires_at=datetime.now(UTC) - timedelta(days=1))
+        .values(expires_at=datetime.now() - timedelta(days=1))
         .filter(refresh_tokens.c.uuid == refresh_token_uuid)
     )
 

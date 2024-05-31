@@ -1,33 +1,43 @@
 from typing import Any
+from pydantic import BaseModel
 
-from fastapi import HTTPException, status
-
-
-class DetailedHTTPException(HTTPException):
-    STATUS_CODE = status.HTTP_500_INTERNAL_SERVER_ERROR
-    DETAIL = "Server error"
-
-    def __init__(self, **kwargs: dict[str, Any]) -> None:
-        super().__init__(status_code=self.STATUS_CODE, detail=self.DETAIL, **kwargs)
+from src.constants import ErrorCode
 
 
-class PermissionDenied(DetailedHTTPException):
-    STATUS_CODE = status.HTTP_403_FORBIDDEN
-    DETAIL = "Permission denied"
+class ErrorItem(BaseModel):
+    error_code: str
+    error_message: str
+    error_detail: Any | None = None
 
 
-class NotFound(DetailedHTTPException):
-    STATUS_CODE = status.HTTP_404_NOT_FOUND
+class ErrorResponse(BaseModel):
+    error: ErrorItem
 
 
-class BadRequest(DetailedHTTPException):
-    STATUS_CODE = status.HTTP_400_BAD_REQUEST
-    DETAIL = "Bad Request"
+class DetailedError(Exception):
+    error_message = "Internal Server error"
+    error_code = "Internal Server error"
+    error_detail = None
+
+    def __init__(self, detail=None):
+        self.error_detail = detail
 
 
-class NotAuthenticated(DetailedHTTPException):
-    STATUS_CODE = status.HTTP_401_UNAUTHORIZED
-    DETAIL = "User not authenticated"
+class PermissionDenied(DetailedError):
+    error_message = "Permission denied"
 
-    def __init__(self) -> None:
-        super().__init__(headers={"WWW-Authenticate": "Bearer"})
+
+class NotFound(DetailedError):
+    error_message = "Not Found"
+
+
+class BadRequest(DetailedError):
+    error_message = "Bad Request"
+
+
+class RemoteError(DetailedError):
+    error_message = "Remote error, try later"
+
+
+class NotAuthenticated(DetailedError):
+    error_message = "User not authenticated"

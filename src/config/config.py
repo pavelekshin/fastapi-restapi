@@ -78,9 +78,7 @@ class BaseConfig(BaseSettings):
     CORS_HEADERS: list[str]
     CORS_ORIGINS: list[str]
     APP_VERSION: str = "1"
+    SITE_DOMAIN: str
 
     TOKEN_SIZE: int = 32
     ENVIRONMENT: Environment = Environment.LOCAL
-
-
-

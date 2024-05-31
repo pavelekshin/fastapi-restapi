@@ -1,11 +1,9 @@
-import json
-import logging
 from functools import wraps
 
 import fastapi.logger
 from redis.exceptions import ConnectionError
 from starlette.requests import Request
-from starlette.responses import JSONResponse
+from starlette.responses import JSONResponse, Response
 from fastapi import BackgroundTasks
 
 from src.redis import get_by_key, set_redis_key, RedisData
@@ -26,7 +24,7 @@ def cache(seconds):
                 logger.error("Redis error %s:", er)
             else:
                 if redis_data:
-                    return JSONResponse(content=json.loads(redis_data), status_code=200)
+                    return Response(content=redis_data, status_code=200, media_type="application/json")
 
             response: JSONResponse = await func(*args, **kwargs)
             body: bytes = response.body

@@ -1,8 +1,7 @@
 import httpx
 
 from src.settings import settings
-from src.weather_service.exceptions import InvalidResponse, InvalidToken
-from src.weather_service.helper import cache
+from src.weather_service.exceptions import InvalidToken, BadResponse
 from src.weather_service.schemas import (
     GeocodingAPIResponse,
     Location,
@@ -36,8 +35,8 @@ class Client:
             response = await client.get(self.GEO_BASE_URL, params=params)
             if not response.is_success:
                 if response.status_code == 401:
-                    raise InvalidToken()
-                raise InvalidResponse()
+                    raise InvalidToken("Remote client authentication issue")
+                raise BadResponse(response.json())
 
             geo_list = GeocodingList.model_validate_json(response.read())
             return GeocodingAPIResponse(entries=geo_list)
@@ -53,7 +52,7 @@ class Client:
             response = await client.get(self.BASE_URL, params=params)
             if not response.is_success:
                 if response.status_code == 401:
-                    raise InvalidToken()
-                raise InvalidResponse()
+                    raise InvalidToken("Remote client authentication issue")
+                raise BadResponse(response.json())
 
             return Weather.model_validate_json(response.read())

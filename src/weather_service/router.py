@@ -2,9 +2,10 @@ import asyncio
 from asyncio import Task
 
 from fastapi import APIRouter, Depends, BackgroundTasks
+from fastapi.encoders import jsonable_encoder
 from starlette import status
 from starlette.requests import Request
-from starlette.responses import JSONResponse, Response
+from starlette.responses import JSONResponse
 
 from src.auth.jwt import parse_jwt_user_data
 from src.auth.schemas import JWTData
@@ -19,13 +20,14 @@ from src.weather_service.schemas import (
     WeatherAPIResponse, Weather
 )
 
-router = APIRouter(dependencies=[Depends(BackgroundTasks()), ])
+router = APIRouter(dependencies=[Depends(BackgroundTasks()), Depends(parse_jwt_user_data)])
 
 
 @router.get(
-    '/api/location/',
+    '/geocording',
     response_model=GeocodingAPIResponse,
     response_model_exclude_none=True,
+    status_code=status.HTTP_200_OK
 )
 @cache(seconds=60)
 async def get_location(
@@ -34,13 +36,14 @@ async def get_location(
 ):
     client = Client()
     response: GeocodingAPIResponse = await client.get_location(loc)
-    return JSONResponse(content=response.model_dump())
+    return JSONResponse(content=jsonable_encoder(response))
 
 
 @router.get(
-    '/api/weather_by_location/',
+    '/location',
     response_model=Weather,
     response_model_exclude_none=True,
+    status_code=status.HTTP_200_OK
 )
 @cache(seconds=60)
 async def get_weather_by_location(
@@ -49,17 +52,21 @@ async def get_weather_by_location(
 ):
     client = Client()
     response: Weather = await client.get_weather(coordinate)
-    return JSONResponse(content=response.model_dump(
-        exclude_unset=True,
-        exclude_none=True,
-        by_alias=True
-    ))
+    return JSONResponse(
+        content=jsonable_encoder(
+            response,
+            exclude_unset=True,
+            exclude_none=True,
+            by_alias=True
+        )
+    )
 
 
 @router.get(
-    '/api/weather_by_name/',
+    '/weather',
     response_model=WeatherAPIResponse,
     response_model_exclude_none=True,
+    status_code=status.HTTP_200_OK
 )
 @cache(seconds=60)
 async def get_weather_by_location_name(
@@ -85,12 +92,12 @@ async def get_weather_by_location_name(
     responses = [done.result() for done in tasks]
 
     if len(responses) == 0:
-        raise InvalidSearch()
+        raise InvalidSearch("Remote server doesn't provide any results")
 
     return JSONResponse(
         content=WeatherAPIResponse(entries=responses).model_dump(
             context={},
             exclude_unset=True,
             exclude_none=True,
-            by_alias=True),
-        status_code=status.HTTP_200_OK)
+            by_alias=True)
+    )

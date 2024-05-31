@@ -42,7 +42,6 @@ app.include_router(auth_router, prefix="/auth", tags=["Auth"])
 app.include_router(
     weather_service_router, prefix="/weather-service", tags=["Weather Service Calls"],
 )
-
 register_error_handlers(app=app)
 
 if __name__ == "__main__":

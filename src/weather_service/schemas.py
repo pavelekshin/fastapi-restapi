@@ -1,4 +1,4 @@
-from typing import Any, Annotated
+from typing import Annotated
 from zoneinfo import ZoneInfo
 
 from pydantic import BaseModel, computed_field, RootModel, Field, ConfigDict, model_serializer, field_serializer, \
@@ -57,13 +57,6 @@ class Sys(CustomModel):
     sunrise: LocalDateTime
     sunset: LocalDateTime
 
-    # @field_serializer('sunrise', 'sunset')
-    # def serialize_dt(self, value: datetime.datetime, info: FieldSerializationInfo):
-    #     offset = datetime.timedelta(seconds=0)
-    #     if info.context:
-    #         offset = info.context.get("offset")
-    #     return convert_datetime_to_localtime(value, offset)
-
 
 class Clouds(BaseModel):
     all: int
@@ -113,8 +106,8 @@ class Weather(CustomModel):
 
 class Location(BaseModel):
     city: str
-    state: str | None = None  # Used only for US
-    country: str = 'RU'
+    state: str | None = Field(default=None, description="Used only for US")
+    country: str = "RU"
 
 
 class LocalsName(BaseModel):

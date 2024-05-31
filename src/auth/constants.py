@@ -2,6 +2,8 @@ class ErrorCode:
     AUTHENTICATION_REQUIRED = "Authentication required."
     AUTHORIZATION_FAILED = "Authorization failed. User has no access."
     INVALID_TOKEN = "Invalid token."
+    INVALID_USERNAME = "Invalid email."
+    INVALID_PASSWORD = "Invalid password."
     INVALID_CREDENTIALS = "Invalid credentials."
     EMAIL_TAKEN = "Email is already taken."
     REFRESH_TOKEN_NOT_VALID = "Refresh token is not valid."

@@ -9,7 +9,7 @@ from src.auth.config import auth_config
 from src.auth.exceptions import AuthorizationFailed, AuthRequired, InvalidToken
 from src.auth.schemas import JWTData
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/users/tokens", auto_error=False)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/users/signin", auto_error=False)
 
 
 def create_access_token(
@@ -19,7 +19,7 @@ def create_access_token(
 ) -> str:
     jwt_data = {
         "sub": str(user["id"]),
-        "exp": datetime.now(UTC) + expires_delta,
+        "exp": datetime.now() + expires_delta,
         "is_admin": user["is_admin"],
     }
 

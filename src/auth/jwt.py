@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta
 from typing import Any
 
 from fastapi import Depends
@@ -13,9 +13,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/users/signin", auto_error=F
 
 
 def create_access_token(
-        *,
-        user: dict[str, Any],
-        expires_delta: timedelta = timedelta(minutes=auth_config.JWT_EXP),
+    *,
+    user: dict[str, Any],
+    expires_delta: timedelta = timedelta(minutes=auth_config.JWT_EXP),
 ) -> str:
     jwt_data = {
         "sub": str(user["id"]),
@@ -27,7 +27,7 @@ def create_access_token(
 
 
 async def parse_jwt_user_data_optional(
-        token: str = Depends(oauth2_scheme),
+    token: str = Depends(oauth2_scheme),
 ) -> JWTData | None:
     if not token:
         return None
@@ -43,7 +43,7 @@ async def parse_jwt_user_data_optional(
 
 
 async def parse_jwt_user_data(
-        token: JWTData | None = Depends(parse_jwt_user_data_optional),
+    token: JWTData | None = Depends(parse_jwt_user_data_optional),
 ) -> JWTData:
     if not token:
         raise AuthRequired()
@@ -52,7 +52,7 @@ async def parse_jwt_user_data(
 
 
 async def parse_jwt_admin_data(
-        token: JWTData = Depends(parse_jwt_user_data),
+    token: JWTData = Depends(parse_jwt_user_data),
 ) -> JWTData:
     if not token.is_admin:
         raise AuthorizationFailed()
@@ -61,7 +61,7 @@ async def parse_jwt_admin_data(
 
 
 async def validate_admin_access(
-        token: JWTData | None = Depends(parse_jwt_user_data_optional),
+    token: JWTData | None = Depends(parse_jwt_user_data_optional),
 ) -> None:
     if token and token.is_admin:
         return

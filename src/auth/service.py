@@ -42,7 +42,7 @@ async def get_user_by_email(email: str) -> dict[str, Any] | None:
 
 
 async def create_refresh_token(
-        *, user_id: int, refresh_token: str | None = None
+    *, user_id: int, refresh_token: str | None = None
 ) -> str:
     if not refresh_token:
         refresh_token = get_token()

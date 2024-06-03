@@ -2,7 +2,13 @@ import datetime
 import re
 from typing import Annotated
 
-from pydantic import EmailStr, Field, AfterValidator, ValidationInfo, BaseModel, PlainSerializer
+from pydantic import (
+    AfterValidator,
+    EmailStr,
+    Field,
+    PlainSerializer,
+    ValidationInfo,
+)
 
 from src.models.models import CustomModel
 
@@ -22,7 +28,9 @@ def valid_password(password: str, info: ValidationInfo) -> str:
     return password
 
 
-StrongPassword = Annotated[str, Field(min_length=6, max_length=32), AfterValidator(valid_password)]
+StrongPassword = Annotated[
+    str, Field(min_length=6, max_length=32), AfterValidator(valid_password)
+]
 
 
 class AuthUser(CustomModel):
@@ -36,7 +44,7 @@ class JWTData(CustomModel):
     expired_at: Annotated[
         datetime.datetime,
         Field(validation_alias="exp"),
-        PlainSerializer(lambda dt: dt.strftime("%Y-%m-%dT%H:%M:%S%z"))
+        PlainSerializer(lambda dt: dt.strftime("%Y-%m-%dT%H:%M:%S%z")),
     ]
 
 

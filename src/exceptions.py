@@ -1,7 +1,6 @@
 from typing import Any
-from pydantic import BaseModel
 
-from src.constants import ErrorCode
+from pydantic import BaseModel
 
 
 class ErrorItem(BaseModel):

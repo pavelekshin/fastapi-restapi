@@ -32,7 +32,7 @@
 Code formated with ruff
 
 ```shell
-ruff --fix, ruff --format
+ruff --fix, ruff format
 ```
 
 ### Migrations

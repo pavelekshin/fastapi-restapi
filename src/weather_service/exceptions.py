@@ -1,8 +1,8 @@
+from src.exceptions import NotAuthenticated, NotFound, RemoteError
 from src.weather_service.constants import ErrorCode
-from src.exceptions import RemoteError, NotAuthenticated, NotFound
 
 
-class BadResponse(RemoteError):
+class InvalidResponse(RemoteError):
     error_code = ErrorCode.INVALID_RESPONSE
 
 

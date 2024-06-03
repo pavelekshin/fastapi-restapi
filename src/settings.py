@@ -6,7 +6,9 @@ from src.config.config import BaseConfig, PostgreSQL
 settings = BaseConfig()
 db_settings = PostgreSQL(url=str(settings.DATABASE_URL))
 
-app_configs: dict[str, Any] = {"title": "App API", }
+app_configs: dict[str, Any] = {
+    "title": "App API",
+}
 app_configs["swagger_ui_parameters"] = {"defaultModelsExpandDepth": -1}  # hide schemas
 if settings.ENVIRONMENT.is_deployed:
     app_configs["root_path"] = f"/v{settings.APP_VERSION}"

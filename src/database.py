@@ -19,7 +19,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from src.settings import settings, db_settings
+from src.settings import db_settings, settings
 
 DB_NAMING_CONVENTION = {
     "ix": "ix_%(column_0_label)s",

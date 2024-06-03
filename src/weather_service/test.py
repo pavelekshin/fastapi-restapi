@@ -1,4 +1,3 @@
-from src.auth.schemas import AuthUser
 from src.weather_service.schemas import Weather
 
 json = """{ "coord": {

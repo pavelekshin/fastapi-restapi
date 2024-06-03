@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
-from pydantic import ValidationError
 from starlette import status
 from starlette.requests import Request
 from starlette.responses import JSONResponse
@@ -10,15 +9,16 @@ from src.auth.exceptions import (
     AuthorizationFailed,
     AuthRequired,
     EmailTaken,
+    FormValidationError,
     InvalidCredentials,
     InvalidToken,
     NotAuthenticated,
     RefreshTokenNotFound,
-    RefreshTokenNotValid, FormValidationError,
+    RefreshTokenNotValid,
 )
-from src.weather_service.exceptions import InvalidToken as WeatherServiceInvalidToken
 from src.exceptions import ErrorItem, ErrorResponse
-from src.weather_service.exceptions import BadResponse, InvalidSearch
+from src.weather_service.exceptions import InvalidResponse, InvalidSearch
+from src.weather_service.exceptions import InvalidToken as WeatherServiceInvalidToken
 
 
 async def email_taken_exception_handler(request: Request, exception: [EmailTaken]):
@@ -35,7 +35,7 @@ async def email_taken_exception_handler(request: Request, exception: [EmailTaken
 
 
 async def authorization_failed_exception_handler(
-        request: Request, exception: [AuthorizationFailed]
+    request: Request, exception: [AuthorizationFailed]
 ):
     error = ErrorItem(
         error_code=exception.error_code,
@@ -50,15 +50,15 @@ async def authorization_failed_exception_handler(
 
 
 async def auth_failed_exception_handler(
-        request: Request,
-        exception: [
-            InvalidCredentials,
-            AuthRequired,
-            NotAuthenticated,
-            InvalidToken,
-            RefreshTokenNotValid,
-            RefreshTokenNotFound,
-        ],
+    request: Request,
+    exception: [
+        InvalidCredentials,
+        AuthRequired,
+        NotAuthenticated,
+        InvalidToken,
+        RefreshTokenNotValid,
+        RefreshTokenNotFound,
+    ],
 ):
     error = ErrorItem(
         error_code=exception.error_code,
@@ -74,10 +74,10 @@ async def auth_failed_exception_handler(
 
 
 async def weather_auth_failed_exception_handler(
-        request: Request,
-        exception: [
-            WeatherServiceInvalidToken,
-        ],
+    request: Request,
+    exception: [
+        WeatherServiceInvalidToken,
+    ],
 ):
     error = ErrorItem(
         error_code=exception.error_code,
@@ -92,7 +92,7 @@ async def weather_auth_failed_exception_handler(
 
 
 async def remote_server_bad_response_failed_exception_handler(
-        request: Request, exception: [BadResponse, InvalidSearch]
+    request: Request, exception: [InvalidResponse, InvalidSearch]
 ):
     error = ErrorItem(
         error_code=exception.error_code,
@@ -107,7 +107,7 @@ async def remote_server_bad_response_failed_exception_handler(
 
 
 async def request_validation_exception_handler(
-        request: Request, exception: [RequestValidationError]
+    request: Request, exception: [RequestValidationError]
 ):
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -118,14 +118,18 @@ async def request_validation_exception_handler(
 
 
 async def form_validation_exception_handler(
-        request: Request, exception: [FormValidationError]
+    request: Request, exception: [FormValidationError]
 ):
-    return JSONResponse({"error": exception.error_detail}, status_code=status.HTTP_401_UNAUTHORIZED)
+    return JSONResponse(
+        {"error": exception.error_detail}, status_code=status.HTTP_401_UNAUTHORIZED
+    )
 
 
 def register_error_handlers(app: FastAPI) -> None:
     app.add_exception_handler(FormValidationError, form_validation_exception_handler)
-    app.add_exception_handler(RequestValidationError, request_validation_exception_handler)
+    app.add_exception_handler(
+        RequestValidationError, request_validation_exception_handler
+    )
     app.add_exception_handler(InvalidCredentials, auth_failed_exception_handler)
     app.add_exception_handler(AuthRequired, auth_failed_exception_handler)
     app.add_exception_handler(NotAuthenticated, auth_failed_exception_handler)
@@ -136,6 +140,12 @@ def register_error_handlers(app: FastAPI) -> None:
         AuthorizationFailed, authorization_failed_exception_handler
     )
     app.add_exception_handler(EmailTaken, email_taken_exception_handler)
-    app.add_exception_handler(BadResponse, remote_server_bad_response_failed_exception_handler)
-    app.add_exception_handler(InvalidSearch, remote_server_bad_response_failed_exception_handler)
-    app.add_exception_handler(WeatherServiceInvalidToken, weather_auth_failed_exception_handler)
+    app.add_exception_handler(
+        InvalidResponse, remote_server_bad_response_failed_exception_handler
+    )
+    app.add_exception_handler(
+        InvalidSearch, remote_server_bad_response_failed_exception_handler
+    )
+    app.add_exception_handler(
+        WeatherServiceInvalidToken, weather_auth_failed_exception_handler
+    )

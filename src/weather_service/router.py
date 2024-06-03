@@ -1,38 +1,40 @@
 import asyncio
 from asyncio import Task
 
-from fastapi import APIRouter, Depends, BackgroundTasks
+from fastapi import APIRouter, BackgroundTasks, Depends
 from fastapi.encoders import jsonable_encoder
 from starlette import status
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from src.auth.jwt import parse_jwt_user_data
-from src.auth.schemas import JWTData
 from src.weather_service.client import Client
 from src.weather_service.exceptions import InvalidSearch
 from src.weather_service.helper import cache
 from src.weather_service.schemas import (
-    GeocodingAPIResponse,
-    Location,
     Coordinates,
     Geocoding,
-    WeatherAPIResponse, Weather
+    GeocodingAPIResponse,
+    Location,
+    Weather,
+    WeatherAPIResponse,
 )
 
-router = APIRouter(dependencies=[Depends(BackgroundTasks()), Depends(parse_jwt_user_data)])
+router = APIRouter(
+    dependencies=[Depends(BackgroundTasks()), Depends(parse_jwt_user_data)]
+)
 
 
 @router.get(
-    '/geocording',
+    "/geocording",
     response_model=GeocodingAPIResponse,
     response_model_exclude_none=True,
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
 )
 @cache(seconds=60)
 async def get_location(
-        request: Request,
-        loc: Location = Depends(),
+    request: Request,
+    loc: Location = Depends(),
 ):
     client = Client()
     response: GeocodingAPIResponse = await client.get_location(loc)
@@ -40,38 +42,35 @@ async def get_location(
 
 
 @router.get(
-    '/location',
+    "/location",
     response_model=Weather,
     response_model_exclude_none=True,
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
 )
 @cache(seconds=60)
 async def get_weather_by_location(
-        request: Request,
-        coordinate: Coordinates = Depends(),
+    request: Request,
+    coordinate: Coordinates = Depends(),
 ):
     client = Client()
     response: Weather = await client.get_weather(coordinate)
     return JSONResponse(
         content=jsonable_encoder(
-            response,
-            exclude_unset=True,
-            exclude_none=True,
-            by_alias=True
+            response, exclude_unset=True, exclude_none=True, by_alias=True
         )
     )
 
 
 @router.get(
-    '/weather',
+    "/weather",
     response_model=WeatherAPIResponse,
     response_model_exclude_none=True,
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
 )
 @cache(seconds=60)
 async def get_weather_by_location_name(
-        request: Request,
-        loc: Location = Depends(),
+    request: Request,
+    loc: Location = Depends(),
 ):
     geo: Geocoding
     client = Client()
@@ -80,8 +79,10 @@ async def get_weather_by_location_name(
     try:
         async with asyncio.TaskGroup() as tg:
             tasks: list[Task] = [
-                tg.create_task(client.get_weather(Coordinates(lat=geo.lat, lon=geo.lon)),
-                               name=f"Task-{geo.lat},{geo.lon}")
+                tg.create_task(
+                    client.get_weather(Coordinates(lat=geo.lat, lon=geo.lon)),
+                    name=f"Task-{geo.lat},{geo.lon}",
+                )
                 for geo in entries.entries
             ]
     except ExceptionGroup:
@@ -96,8 +97,6 @@ async def get_weather_by_location_name(
 
     return JSONResponse(
         content=WeatherAPIResponse(entries=responses).model_dump(
-            context={},
-            exclude_unset=True,
-            exclude_none=True,
-            by_alias=True)
+            context={}, exclude_unset=True, exclude_none=True, by_alias=True
+        )
     )

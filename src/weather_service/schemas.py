@@ -1,17 +1,30 @@
+import datetime
 from typing import Annotated
 from zoneinfo import ZoneInfo
 
-from pydantic import BaseModel, computed_field, RootModel, Field, ConfigDict, model_serializer, field_serializer, \
-    PlainSerializer
-from pydantic_core.core_schema import SerializerFunctionWrapHandler, SerializationInfo, FieldSerializationInfo
+from pydantic import (
+    BaseModel,
+    Field,
+    PlainSerializer,
+    RootModel,
+    computed_field,
+    field_serializer,
+    model_serializer,
+)
+from pydantic_core.core_schema import (
+    FieldSerializationInfo,
+    SerializationInfo,
+    SerializerFunctionWrapHandler,
+)
 from pydantic_extra_types.coordinate import Latitude, Longitude
 from pydantic_extra_types.country import CountryAlpha2
-import datetime
 
 from src.models.models import CustomModel
 
 
-def convert_datetime_to_localtime(dt: datetime.datetime, offset: datetime.timedelta) -> str:
+def convert_datetime_to_localtime(
+    dt: datetime.datetime, offset: datetime.timedelta
+) -> str:
     if not dt.tzinfo:
         dt = dt.replace(tzinfo=ZoneInfo("UTC"))
 
@@ -93,12 +106,14 @@ class Weather(CustomModel):
     def offset_utc(self) -> str:
         return str(datetime.timezone(self.timezone))
 
-    @field_serializer('timezone')
+    @field_serializer("timezone")
     def serialize_timezone(self, value: datetime.timedelta):
         return int(value.seconds)
 
     @model_serializer(mode="wrap")
-    def serialize_model(self, serializer: SerializerFunctionWrapHandler, info: SerializationInfo):
+    def serialize_model(
+        self, serializer: SerializerFunctionWrapHandler, info: SerializationInfo
+    ):
         if isinstance(info.context, dict):
             info.context["offset"] = self.timezone
         return serializer(self)

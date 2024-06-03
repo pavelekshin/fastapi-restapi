@@ -6,8 +6,8 @@ from src.settings import settings
 
 
 def get_refresh_token_settings(
-        refresh_token: str,
-        expired: bool = False,
+    refresh_token: str,
+    expired: bool = False,
 ) -> dict[str, Any]:
     base_cookie = {
         "key": auth_config.REFRESH_TOKEN_KEY,

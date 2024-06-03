@@ -7,10 +7,10 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from src import redis
-from src.exception_handlers import register_error_handlers
-from src.settings import settings, app_configs
-from src.weather_service.router import router as weather_service_router
 from src.auth.router import router as auth_router
+from src.exception_handlers import register_error_handlers
+from src.settings import app_configs, settings
+from src.weather_service.router import router as weather_service_router
 
 REDIS_URL = str(settings.REDIS_URL)
 
@@ -40,7 +40,9 @@ app.add_middleware(
 
 app.include_router(auth_router, prefix="/auth", tags=["Auth"])
 app.include_router(
-    weather_service_router, prefix="/weather-service", tags=["Weather Service Calls"],
+    weather_service_router,
+    prefix="/weather-service",
+    tags=["Weather Service Calls"],
 )
 register_error_handlers(app=app)
 

@@ -2,7 +2,7 @@ import datetime
 import re
 from typing import Annotated
 
-from pydantic import EmailStr, Field, AfterValidator, ValidationInfo, BaseModel
+from pydantic import EmailStr, Field, AfterValidator, ValidationInfo, BaseModel, PlainSerializer
 
 from src.models.models import CustomModel
 
@@ -33,7 +33,11 @@ class AuthUser(CustomModel):
 class JWTData(CustomModel):
     user_id: Annotated[int, Field(validation_alias="sub")]
     is_admin: bool = False
-    expired_at: Annotated[datetime.datetime, Field(validation_alias="exp")]
+    expired_at: Annotated[
+        datetime.datetime,
+        Field(validation_alias="exp"),
+        PlainSerializer(lambda dt: dt.strftime("%Y-%m-%dT%H:%M:%S%z"))
+    ]
 
 
 class AccessTokenResponse(CustomModel):

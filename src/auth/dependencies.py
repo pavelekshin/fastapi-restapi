@@ -1,10 +1,12 @@
 from datetime import datetime
-from typing import Any
+from typing import Any, Annotated
 
 from fastapi import Cookie, Depends
+from fastapi.security import OAuth2PasswordRequestForm
+from pydantic import ValidationError
 
 from src.auth import service
-from src.auth.exceptions import EmailTaken, RefreshTokenNotValid, RefreshTokenNotFound
+from src.auth.exceptions import EmailTaken, RefreshTokenNotValid, RefreshTokenNotFound, FormValidationError
 from src.auth.schemas import AuthUser
 
 
@@ -18,7 +20,6 @@ async def valid_user_create(user: AuthUser) -> AuthUser:
 async def valid_refresh_token(
         refresh_token: str = Cookie(..., alias="refreshToken", include_in_schema=False),
 ) -> dict[str, Any]:
-    print(refresh_token)
     db_refresh_token = await service.get_refresh_token(refresh_token)
     if not db_refresh_token:
         raise RefreshTokenNotFound()
@@ -41,3 +42,13 @@ async def valid_refresh_token_user(
 
 def _is_valid_refresh_token(db_refresh_token: dict[str, Any]) -> bool:
     return datetime.now() <= db_refresh_token["expires_at"]
+
+
+async def validate_swagger_auth_form(
+        form_data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> AuthUser:
+    try:
+        return AuthUser(email=form_data.username, password=form_data.password)
+    except ValidationError as er:
+        error = er.errors()[0]
+        msg = error.get('msg')
+        raise FormValidationError(msg)

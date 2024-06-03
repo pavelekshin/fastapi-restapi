@@ -14,10 +14,14 @@ logger = fastapi.logger.logger
 def cache(seconds):
     def wrapper(func):
         @wraps(func)
-        async def wrapped(*args, **kwargs):
-            request: Request = kwargs.get("request")
+        async def wrapped(request: Request, *args, **kwargs):
+
+            if not request:
+                return
+
             params = request.query_params
             key = f"{func.__name__}_{params}"
+
             try:
                 redis_data = await get_by_key(key)
             except ConnectionError as er:
@@ -26,7 +30,7 @@ def cache(seconds):
                 if redis_data:
                     return Response(content=redis_data, status_code=200, media_type="application/json")
 
-            response: JSONResponse = await func(*args, **kwargs)
+            response: JSONResponse = await func(request, *args, **kwargs)
             body: bytes = response.body
             task = BackgroundTasks()
             task.add_task(set_redis_key, RedisData(key=key, value=body, ttl=seconds))

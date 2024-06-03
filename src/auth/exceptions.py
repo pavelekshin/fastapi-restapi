@@ -1,8 +1,6 @@
 from src.auth.constants import ErrorCode
 from src.exceptions import BadRequest, NotAuthenticated, PermissionDenied
 
-REFRESH_TOKEN_REQUIRED = "Refresh token is required either in the body or cookie."
-
 
 class EmailTaken(BadRequest):
     error_code = ErrorCode.EMAIL_TAKEN
@@ -22,6 +20,10 @@ class InvalidToken(NotAuthenticated):
 
 class InvalidCredentials(NotAuthenticated):
     error_code = ErrorCode.INVALID_CREDENTIALS
+
+
+class FormValidationError(NotAuthenticated):
+    error_code = ErrorCode.FORM_VALIDATION_FAILED
 
 
 class RefreshTokenNotValid(NotAuthenticated):

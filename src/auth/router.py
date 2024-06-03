@@ -1,14 +1,12 @@
-from typing import Any, Annotated, Union
-from fastapi import APIRouter, BackgroundTasks, Depends, Response, status, HTTPException
+from typing import Any, Annotated
+from fastapi import APIRouter, BackgroundTasks, Depends, Response, status
 from fastapi.encoders import jsonable_encoder
-from fastapi.security import OAuth2PasswordRequestForm
-from pydantic import ValidationError
 
 from src.auth import jwt, service, utils
 from src.auth.dependencies import (
     valid_refresh_token,
     valid_refresh_token_user,
-    valid_user_create,
+    valid_user_create, validate_swagger_auth_form,
 )
 from src.auth.jwt import parse_jwt_user_data
 from src.auth.schemas import AccessTokenResponse, AuthUser, JWTData, UserResponse
@@ -30,7 +28,7 @@ async def register_user(
 @router.get("/users/me", response_model=UserResponse)
 async def get_my_account(
         jwt_data: JWTData = Depends(parse_jwt_user_data),
-) -> UserResponse:
+) -> dict[str, str]:
     user = await service.get_user_by_id(jwt_data.user_id)
     return jsonable_encoder(user)
 
@@ -45,9 +43,8 @@ async def get_token_info(
 @router.post("/users/signin", response_model=AccessTokenResponse, include_in_schema=False)
 async def auth_swagger(
         response: Response,
-        form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+        auth_data: Annotated[AuthUser, Depends(validate_swagger_auth_form)]
 ) -> AccessTokenResponse:
-    auth_data = AuthUser(email=form_data.username, password=form_data.password)
     user = await service.authenticate_user(auth_data)
     refresh_token_value = await service.create_refresh_token(user_id=user["id"])
 
@@ -98,7 +95,7 @@ async def refresh_tokens(
 async def logout_user(
         response: Response,
         refresh_token: dict[str, Any] = Depends(valid_refresh_token),
-):
+) -> None:
     await service.expire_refresh_token(refresh_token["uuid"])
 
     response.delete_cookie(

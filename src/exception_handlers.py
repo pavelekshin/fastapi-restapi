@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
-from fastapi.exceptions import RequestValidationError, HTTPException
+from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
 from starlette import status
 from starlette.requests import Request
-from starlette.responses import JSONResponse, PlainTextResponse
+from starlette.responses import JSONResponse
 
 from src.auth.exceptions import (
     AuthorizationFailed,
@@ -14,7 +14,7 @@ from src.auth.exceptions import (
     InvalidToken,
     NotAuthenticated,
     RefreshTokenNotFound,
-    RefreshTokenNotValid,
+    RefreshTokenNotValid, FormValidationError,
 )
 from src.weather_service.exceptions import InvalidToken as WeatherServiceInvalidToken
 from src.exceptions import ErrorItem, ErrorResponse
@@ -117,16 +117,14 @@ async def request_validation_exception_handler(
     )
 
 
-async def pydantic_validation_exception_handler(
-        request: Request, exception: [ValidationError]
+async def form_validation_exception_handler(
+        request: Request, exception: [FormValidationError]
 ):
-    ex = exception.errors()[0]
-    msg = ex.get('msg')
-    return JSONResponse({"error": msg}, status_code=status.HTTP_401_UNAUTHORIZED)
+    return JSONResponse({"error": exception.error_detail}, status_code=status.HTTP_401_UNAUTHORIZED)
 
 
 def register_error_handlers(app: FastAPI) -> None:
-    app.add_exception_handler(ValidationError, pydantic_validation_exception_handler)
+    app.add_exception_handler(FormValidationError, form_validation_exception_handler)
     app.add_exception_handler(RequestValidationError, request_validation_exception_handler)
     app.add_exception_handler(InvalidCredentials, auth_failed_exception_handler)
     app.add_exception_handler(AuthRequired, auth_failed_exception_handler)

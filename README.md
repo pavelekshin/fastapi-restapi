@@ -16,7 +16,8 @@
 - redis cache
 - pydantic model
 - FastAPI dependencies and background task
-- and some other extras, like global custom exceptions, index naming convention, shortcut scripts for alembic, etc...
+- and some other extras, like global custom exceptions, index naming convention, shortcut scripts for alembic, pydantic
+  context, custom model, etc...
 
 ## Local Development
 

@@ -42,7 +42,7 @@ class Client:
         return GeocodingAPIResponse(entries=geo_list)
 
     async def get_weather(
-            self, coordinate: Coordinates, units: str = "metric"
+        self, coordinate: Coordinates, units: str = "metric"
     ) -> Weather:
         async with self.client as client:
             params = {

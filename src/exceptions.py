@@ -22,15 +22,15 @@ class DetailedError(Exception):
         self.error_detail = detail
 
 
-class PermissionDenied(DetailedError):
+class PermissionDeniedError(DetailedError):
     error_message = "Permission denied"
 
 
-class NotFound(DetailedError):
+class NotFoundError(DetailedError):
     error_message = "Not Found"
 
 
-class BadRequest(DetailedError):
+class BadRequestError(DetailedError):
     error_message = "Bad Request"
 
 
@@ -38,5 +38,5 @@ class RemoteError(DetailedError):
     error_message = "Remote error, try later"
 
 
-class NotAuthenticated(DetailedError):
+class NotAuthenticatedError(DetailedError):
     error_message = "User not authenticated"

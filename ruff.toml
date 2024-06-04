@@ -51,6 +51,7 @@ select = [
 ]
 
 ignore = [
+    "B008",
     "COM812",
     "E501",
 ]
@@ -63,8 +64,8 @@ unfixable = []
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [lint.mccabe]
-# Flag errors (`C901`) whenever the complexity level exceeds 5.
-max-complexity = 5
+# Flag errors (`C901`) whenever the complexity level exceeds 8.
+max-complexity = 8
 
 [format]
 # Like Black, use double quotes for strings.

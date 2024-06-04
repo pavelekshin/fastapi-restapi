@@ -9,7 +9,7 @@ from starlette.responses import JSONResponse
 
 from src.auth.jwt import parse_jwt_user_data
 from src.weather_service.client import Client
-from src.weather_service.exceptions import InvalidSearch
+from src.weather_service.exceptions import InvalidSearchError
 from src.weather_service.helper import cache
 from src.weather_service.schemas import (
     Coordinates,
@@ -72,9 +72,9 @@ async def get_weather_by_location_name(
     request: Request,
     loc: Location = Depends(),
 ):
-    geo: Geocoding
     client = Client()
-    entries: GeocodingAPIResponse = await client.get_location(loc)
+    response: GeocodingAPIResponse = await client.get_location(loc)
+    entries: list[Geocoding] = response.entries
 
     try:
         async with asyncio.TaskGroup() as tg:
@@ -83,7 +83,7 @@ async def get_weather_by_location_name(
                     client.get_weather(Coordinates(lat=geo.lat, lon=geo.lon)),
                     name=f"Task-{geo.lat},{geo.lon}",
                 )
-                for geo in entries.entries
+                for geo in entries
             ]
     except ExceptionGroup:
         pass
@@ -93,7 +93,7 @@ async def get_weather_by_location_name(
     responses = [done.result() for done in tasks]
 
     if len(responses) == 0:
-        raise InvalidSearch("Remote server doesn't provide any results")
+        raise InvalidSearchError("Remote server doesn't provide any results")
 
     return JSONResponse(
         content=WeatherAPIResponse(entries=responses).model_dump(

@@ -7,17 +7,17 @@ from pydantic import ValidationError
 
 from src.auth import service
 from src.auth.exceptions import (
-    EmailTaken,
+    EmailTakenError,
     FormValidationError,
-    RefreshTokenNotFound,
-    RefreshTokenNotValid,
+    RefreshTokenNotFoundError,
+    RefreshTokenNotValidError,
 )
 from src.auth.schemas import AuthUser
 
 
 async def valid_user_create(user: AuthUser) -> AuthUser:
     if await service.get_user_by_email(user.email):
-        raise EmailTaken()
+        raise EmailTakenError()
 
     return user
 
@@ -27,10 +27,10 @@ async def valid_refresh_token(
 ) -> dict[str, Any]:
     db_refresh_token = await service.get_refresh_token(refresh_token)
     if not db_refresh_token:
-        raise RefreshTokenNotFound()
+        raise RefreshTokenNotFoundError()
 
     if not _is_valid_refresh_token(db_refresh_token):
-        raise RefreshTokenNotValid()
+        raise RefreshTokenNotValidError()
 
     return db_refresh_token
 
@@ -40,7 +40,7 @@ async def valid_refresh_token_user(
 ) -> dict[str, Any]:
     user = await service.get_user_by_id(refresh_token["user_id"])
     if not user:
-        raise RefreshTokenNotValid()
+        raise RefreshTokenNotValidError()
 
     return user
 
@@ -57,4 +57,4 @@ async def validate_swagger_auth_form(
     except ValidationError as er:
         error = er.errors()[0]
         msg = error.get("msg")
-        raise FormValidationError(msg)
+        raise FormValidationError(msg) from er

@@ -153,7 +153,7 @@ class GeocodingList(RootModel):
 
 
 class GeocodingAPIResponse(BaseModel):
-    entries: GeocodingList
+    entries: list[Geocoding]
 
     @computed_field
     @property

@@ -6,7 +6,7 @@ from pydantic import UUID4
 from sqlalchemy import insert, select, update
 
 from src.auth.config import auth_config
-from src.auth.exceptions import InvalidCredentials
+from src.auth.exceptions import InvalidCredentialsError
 from src.auth.schemas import AuthUser
 from src.auth.security import check_password, hash_password
 from src.auth.utils import get_token
@@ -79,9 +79,9 @@ async def expire_refresh_token(refresh_token_uuid: UUID4) -> None:
 async def authenticate_user(auth_data: AuthUser) -> dict[str, Any]:
     user = await get_user_by_email(auth_data.email)
     if not user:
-        raise InvalidCredentials()
+        raise InvalidCredentialsError()
 
     if not check_password(auth_data.password, user["password"]):
-        raise InvalidCredentials()
+        raise InvalidCredentialsError()
 
     return user

@@ -6,22 +6,24 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from src.auth.exceptions import (
-    AuthorizationFailed,
-    AuthRequired,
-    EmailTaken,
+    AuthorizationFailedError,
+    AuthRequiredError,
+    EmailTakenError,
     FormValidationError,
-    InvalidCredentials,
-    InvalidToken,
-    NotAuthenticated,
-    RefreshTokenNotFound,
-    RefreshTokenNotValid,
+    InvalidCredentialsError,
+    InvalidTokenError,
+    NotAuthenticatedError,
+    RefreshTokenNotFoundError,
+    RefreshTokenNotValidError,
 )
 from src.exceptions import ErrorItem, ErrorResponse
-from src.weather_service.exceptions import InvalidResponse, InvalidSearch
-from src.weather_service.exceptions import InvalidToken as WeatherServiceInvalidToken
+from src.weather_service.exceptions import InvalidResponseError, InvalidSearchError
+from src.weather_service.exceptions import (
+    InvalidTokenError as WeatherServiceInvalidToken,
+)
 
 
-async def email_taken_exception_handler(request: Request, exception: [EmailTaken]):
+async def email_taken_exception_handler(request: Request, exception: [EmailTakenError]):
     error = ErrorItem(
         error_code=exception.error_code,
         error_message=exception.error_message,
@@ -35,7 +37,7 @@ async def email_taken_exception_handler(request: Request, exception: [EmailTaken
 
 
 async def authorization_failed_exception_handler(
-    request: Request, exception: [AuthorizationFailed]
+    request: Request, exception: [AuthorizationFailedError]
 ):
     error = ErrorItem(
         error_code=exception.error_code,
@@ -52,12 +54,12 @@ async def authorization_failed_exception_handler(
 async def auth_failed_exception_handler(
     request: Request,
     exception: [
-        InvalidCredentials,
-        AuthRequired,
-        NotAuthenticated,
-        InvalidToken,
-        RefreshTokenNotValid,
-        RefreshTokenNotFound,
+        InvalidCredentialsError,
+        AuthRequiredError,
+        NotAuthenticatedError,
+        InvalidTokenError,
+        RefreshTokenNotValidError,
+        RefreshTokenNotFoundError,
     ],
 ):
     error = ErrorItem(
@@ -92,7 +94,7 @@ async def weather_auth_failed_exception_handler(
 
 
 async def remote_server_bad_response_failed_exception_handler(
-    request: Request, exception: [InvalidResponse, InvalidSearch]
+    request: Request, exception: [InvalidResponseError, InvalidSearchError]
 ):
     error = ErrorItem(
         error_code=exception.error_code,
@@ -130,21 +132,21 @@ def register_error_handlers(app: FastAPI) -> None:
     app.add_exception_handler(
         RequestValidationError, request_validation_exception_handler
     )
-    app.add_exception_handler(InvalidCredentials, auth_failed_exception_handler)
-    app.add_exception_handler(AuthRequired, auth_failed_exception_handler)
-    app.add_exception_handler(NotAuthenticated, auth_failed_exception_handler)
-    app.add_exception_handler(InvalidToken, auth_failed_exception_handler)
-    app.add_exception_handler(RefreshTokenNotValid, auth_failed_exception_handler)
-    app.add_exception_handler(RefreshTokenNotFound, auth_failed_exception_handler)
+    app.add_exception_handler(InvalidCredentialsError, auth_failed_exception_handler)
+    app.add_exception_handler(AuthRequiredError, auth_failed_exception_handler)
+    app.add_exception_handler(NotAuthenticatedError, auth_failed_exception_handler)
+    app.add_exception_handler(InvalidTokenError, auth_failed_exception_handler)
+    app.add_exception_handler(RefreshTokenNotValidError, auth_failed_exception_handler)
+    app.add_exception_handler(RefreshTokenNotFoundError, auth_failed_exception_handler)
     app.add_exception_handler(
-        AuthorizationFailed, authorization_failed_exception_handler
+        AuthorizationFailedError, authorization_failed_exception_handler
     )
-    app.add_exception_handler(EmailTaken, email_taken_exception_handler)
+    app.add_exception_handler(EmailTakenError, email_taken_exception_handler)
     app.add_exception_handler(
-        InvalidResponse, remote_server_bad_response_failed_exception_handler
+        InvalidResponseError, remote_server_bad_response_failed_exception_handler
     )
     app.add_exception_handler(
-        InvalidSearch, remote_server_bad_response_failed_exception_handler
+        InvalidSearchError, remote_server_bad_response_failed_exception_handler
     )
     app.add_exception_handler(
         WeatherServiceInvalidToken, weather_auth_failed_exception_handler

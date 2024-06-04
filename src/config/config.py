@@ -5,7 +5,6 @@ from pydantic import PostgresDsn, RedisDsn
 from pydantic_settings import BaseSettings
 
 from src.constants import Environment
-from src.db.db_folder import get_db_path
 
 
 class SqlAlchemyConfig:
@@ -19,7 +18,7 @@ class SqlAlchemyConfig:
 
     @property
     def sa_database_uri(self) -> str:
-        if self.__class__ is SQLite or PostgreSQL:
+        if self.__class__ is PostgreSQL:
             return self.DATABASE_URL
         else:
             raise NotImplementedError("This DB not implemented!")
@@ -53,21 +52,6 @@ class PostgreSQL(SqlAlchemyConfig):
         self.DATABASE_URL = url
 
 
-class SQLite(SqlAlchemyConfig):
-    """Uses for SQLite database server."""
-
-    ECHO: bool = True
-    ENGINE_OPTIONS: dict[str, Any] = {
-        "pool_pre_ping": True,
-    }
-    DB_NAME = "weather.sqlite"
-
-    def __init__(self, db_name: str):
-        if db_name.strip():
-            self.DB_NAME = db_name
-        self.DATABASE_URL = f"sqlite+aiosqlite:///{get_db_path(self.DB_NAME)}"
-
-
 load_dotenv(find_dotenv(".env"))
 
 
@@ -77,7 +61,7 @@ class BaseConfig(BaseSettings):
     WEATHER_SERVICE_APIKEY: str
     CORS_HEADERS: list[str]
     CORS_ORIGINS: list[str]
-    APP_VERSION: str = "1"
+    APP_VERSION: str = "0.1"
     SITE_DOMAIN: str
 
     TOKEN_SIZE: int = 32

@@ -6,7 +6,11 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 
 from src.auth.config import auth_config
-from src.auth.exceptions import AuthorizationFailed, AuthRequired, InvalidToken
+from src.auth.exceptions import (
+    AuthorizationFailedError,
+    AuthRequiredError,
+    InvalidTokenError,
+)
 from src.auth.schemas import JWTData
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/users/signin", auto_error=False)
@@ -37,7 +41,7 @@ async def parse_jwt_user_data_optional(
             token, auth_config.JWT_SECRET, algorithms=[auth_config.JWT_ALG]
         )
     except JWTError:
-        raise InvalidToken()
+        raise InvalidTokenError()
 
     return JWTData(**payload)
 
@@ -46,7 +50,7 @@ async def parse_jwt_user_data(
     token: JWTData | None = Depends(parse_jwt_user_data_optional),
 ) -> JWTData:
     if not token:
-        raise AuthRequired()
+        raise AuthRequiredError()
 
     return token
 
@@ -55,7 +59,7 @@ async def parse_jwt_admin_data(
     token: JWTData = Depends(parse_jwt_user_data),
 ) -> JWTData:
     if not token.is_admin:
-        raise AuthorizationFailed()
+        raise AuthorizationFailedError()
 
     return token
 
@@ -66,4 +70,4 @@ async def validate_admin_access(
     if token and token.is_admin:
         return
 
-    raise AuthorizationFailed()
+    raise AuthorizationFailedError()

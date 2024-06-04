@@ -1,14 +1,14 @@
-from src.exceptions import NotAuthenticatedError, NotFoundError, RemoteError
+from src.exceptions import ExternalError, NotAuthenticatedError, NotFoundError
 from src.weather_service.constants import ErrorCode
 
 
-class InvalidResponseError(RemoteError):
-    error_code = ErrorCode.INVALID_RESPONSE
+class InvalidResponseError(ExternalError):
+    ERROR_CODE = ErrorCode.INVALID_RESPONSE
 
 
 class InvalidTokenError(NotAuthenticatedError):
-    error_code = ErrorCode.INVALID_TOKEN
+    ERROR_CODE = ErrorCode.INVALID_TOKEN
 
 
 class InvalidSearchError(NotFoundError):
-    error_code = ErrorCode.INVALID_SEARCH
+    ERROR_CODE = ErrorCode.INVALID_SEARCH

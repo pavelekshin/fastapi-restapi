@@ -3,32 +3,32 @@ from src.exceptions import BadRequestError, NotAuthenticatedError, PermissionDen
 
 
 class EmailTakenError(BadRequestError):
-    error_code = ErrorCode.EMAIL_TAKEN
+    ERROR_CODE = ErrorCode.EMAIL_TAKEN
 
 
 class AuthorizationFailedError(PermissionDeniedError):
-    error_code = ErrorCode.AUTHORIZATION_FAILED
+    ERROR_CODE = ErrorCode.AUTHORIZATION_FAILED
 
 
 class AuthRequiredError(NotAuthenticatedError):
-    error_code = ErrorCode.AUTHENTICATION_REQUIRED
+    ERROR_CODE = ErrorCode.AUTHENTICATION_REQUIRED
 
 
 class InvalidTokenError(NotAuthenticatedError):
-    error_code = ErrorCode.INVALID_TOKEN
+    ERROR_CODE = ErrorCode.INVALID_TOKEN
 
 
 class InvalidCredentialsError(NotAuthenticatedError):
-    error_code = ErrorCode.INVALID_CREDENTIALS
+    ERROR_CODE = ErrorCode.INVALID_CREDENTIALS
 
 
 class FormValidationError(NotAuthenticatedError):
-    error_code = ErrorCode.FORM_VALIDATION_FAILED
+    ERROR_CODE = ErrorCode.FORM_VALIDATION_FAILED
 
 
 class RefreshTokenNotValidError(NotAuthenticatedError):
-    error_code = ErrorCode.REFRESH_TOKEN_NOT_VALID
+    ERROR_CODE = ErrorCode.REFRESH_TOKEN_NOT_VALID
 
 
 class RefreshTokenNotFoundError(NotAuthenticatedError):
-    error_code = ErrorCode.REFRESH_TOKEN_REQUIRED
+    ERROR_CODE = ErrorCode.REFRESH_TOKEN_REQUIRED

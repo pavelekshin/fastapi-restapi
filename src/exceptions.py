@@ -2,6 +2,8 @@ from typing import Any
 
 from pydantic import BaseModel
 
+from src.constants import ErrorCode, ErrorMessage
+
 
 class ErrorItem(BaseModel):
     error_code: str
@@ -14,29 +16,29 @@ class ErrorResponse(BaseModel):
 
 
 class DetailedError(Exception):
-    error_message = "Internal Server error"
-    error_code = "Internal Server error"
-    error_detail = None
+    ERROR_MESSAGE = ErrorMessage.INTERNAL_SERVER_ERROR
+    ERROR_CODE = ErrorCode.INTERNAL_SERVER_ERROR
+    ERROR_DETAIL = None
 
     def __init__(self, detail=None):
-        self.error_detail = detail
+        self.ERROR_DETAIL = detail
 
 
 class PermissionDeniedError(DetailedError):
-    error_message = "Permission denied"
+    ERROR_MESSAGE = ErrorMessage.PERMISSION_DENIED
 
 
 class NotFoundError(DetailedError):
-    error_message = "Not Found"
+    ERROR_MESSAGE = ErrorMessage.NOT_FOUND
 
 
 class BadRequestError(DetailedError):
-    error_message = "Bad Request"
+    ERROR_MESSAGE = ErrorMessage.BAD_REQUEST
 
 
-class RemoteError(DetailedError):
-    error_message = "Remote error, try later"
+class ExternalError(DetailedError):
+    ERROR_MESSAGE = ErrorMessage.EXTERNAL_ERROR
 
 
 class NotAuthenticatedError(DetailedError):
-    error_message = "User not authenticated"
+    ERROR_MESSAGE = ErrorMessage.AUTHENTICATION_ERROR

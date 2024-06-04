@@ -2,8 +2,16 @@ from enum import Enum
 
 
 class ErrorCode:
-    INVALID_INPUT = "Invalid input data"
-    NOT_FOUND = "Requested information not found"
+    INTERNAL_SERVER_ERROR = "Internal Server error"
+
+
+class ErrorMessage:
+    INTERNAL_SERVER_ERROR = "Internal Server error"
+    PERMISSION_DENIED = "Permission denied"
+    NOT_FOUND = "Not Found"
+    BAD_REQUEST = "Bad Request"
+    EXTERNAL_ERROR = "External error, try later"
+    AUTHENTICATION_ERROR = "User not authenticated"
 
 
 class Environment(str, Enum):

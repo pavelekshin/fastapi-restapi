@@ -31,10 +31,6 @@
 
 Code formated with ruff
 
-```shell
-ruff --fix, ruff format
-```
-
 ### Migrations
 
 - Create an automatic migration from changes in `src/database.py`
@@ -55,3 +51,7 @@ docker compose exec app migrate
 docker compose exec app downgrade -1  # or -2 or base or hash of the migration
 ```
 
+### Swagger UI
+```shell
+http://localhost:15000/docs
+```

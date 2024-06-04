@@ -15,6 +15,7 @@
 - salted password storage with `bcrypt`
 - redis cache
 - pydantic model
+- linters / format with ruff
 - FastAPI dependencies and background task
 - and some other extras, like global custom exceptions, index naming convention, shortcut scripts for alembic, pydantic
   context, custom model, etc...
@@ -26,10 +27,6 @@
 1. `cp .env.example .env`
 2. `docker network create app_weather`
 3. `docker-compose up -d --build`
-
-### Linters
-
-Code formated with ruff
 
 ### Migrations
 
@@ -52,6 +49,7 @@ docker compose exec app downgrade -1  # or -2 or base or hash of the migration
 ```
 
 ### Swagger UI
+
 ```shell
 http://localhost:15000/docs
 ```

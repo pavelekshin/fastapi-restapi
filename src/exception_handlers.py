@@ -37,7 +37,7 @@ async def email_taken_exception_handler(request: Request, exception: [EmailTaken
 
 
 async def authorization_failed_exception_handler(
-        request: Request, exception: [AuthorizationFailedError]
+    request: Request, exception: [AuthorizationFailedError]
 ):
     error = ErrorItem(
         error_code=exception.ERROR_CODE,
@@ -52,15 +52,15 @@ async def authorization_failed_exception_handler(
 
 
 async def auth_failed_exception_handler(
-        request: Request,
-        exception: [
-            InvalidCredentialsError,
-            AuthRequiredError,
-            NotAuthenticatedError,
-            InvalidTokenError,
-            RefreshTokenNotValidError,
-            RefreshTokenNotFoundError,
-        ],
+    request: Request,
+    exception: [
+        InvalidCredentialsError,
+        AuthRequiredError,
+        NotAuthenticatedError,
+        InvalidTokenError,
+        RefreshTokenNotValidError,
+        RefreshTokenNotFoundError,
+    ],
 ):
     error = ErrorItem(
         error_code=exception.ERROR_CODE,
@@ -76,10 +76,10 @@ async def auth_failed_exception_handler(
 
 
 async def weather_auth_failed_exception_handler(
-        request: Request,
-        exception: [
-            WeatherServiceInvalidToken,
-        ],
+    request: Request,
+    exception: [
+        WeatherServiceInvalidToken,
+    ],
 ):
     error = ErrorItem(
         error_code=exception.ERROR_CODE,
@@ -94,7 +94,7 @@ async def weather_auth_failed_exception_handler(
 
 
 async def remote_server_bad_response_failed_exception_handler(
-        request: Request, exception: [InvalidResponseError, InvalidSearchError]
+    request: Request, exception: [InvalidResponseError, InvalidSearchError]
 ):
     error = ErrorItem(
         error_code=exception.ERROR_CODE,
@@ -109,7 +109,7 @@ async def remote_server_bad_response_failed_exception_handler(
 
 
 async def request_validation_exception_handler(
-        request: Request, exception: [RequestValidationError]
+    request: Request, exception: [RequestValidationError]
 ):
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -120,7 +120,7 @@ async def request_validation_exception_handler(
 
 
 async def form_validation_exception_handler(
-        request: Request, exception: [FormValidationError]
+    request: Request, exception: [FormValidationError]
 ):
     return JSONResponse(
         {"error": exception.error_detail}, status_code=status.HTTP_401_UNAUTHORIZED

@@ -23,7 +23,7 @@ class Client:
 
     @property
     def client(self):
-        return httpx.AsyncClient(base_url=self.BASE_URL, timeout=5.0)
+        return httpx.AsyncClient(timeout=5.0)
 
     async def get_location(self, loc: Location, limit: int = 5) -> GeocodingAPIResponse:
         async with self.client as client:

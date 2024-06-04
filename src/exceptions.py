@@ -16,29 +16,29 @@ class ErrorResponse(BaseModel):
 
 
 class DetailedError(Exception):
-    ERROR_MESSAGE = ErrorMessage.INTERNAL_SERVER_ERROR
-    ERROR_CODE = ErrorCode.INTERNAL_SERVER_ERROR
-    ERROR_DETAIL = None
+    error_message = ErrorMessage.INTERNAL_SERVER_ERROR
+    error_code = ErrorCode.INTERNAL_SERVER_ERROR
+    error_detail = None
 
     def __init__(self, detail=None):
-        self.ERROR_DETAIL = detail
+        self.error_detail = detail
 
 
 class PermissionDeniedError(DetailedError):
-    ERROR_MESSAGE = ErrorMessage.PERMISSION_DENIED
+    error_message = ErrorMessage.PERMISSION_DENIED
 
 
 class NotFoundError(DetailedError):
-    ERROR_MESSAGE = ErrorMessage.NOT_FOUND
+    error_message = ErrorMessage.NOT_FOUND
 
 
 class BadRequestError(DetailedError):
-    ERROR_MESSAGE = ErrorMessage.BAD_REQUEST
+    error_message = ErrorMessage.BAD_REQUEST
 
 
 class ExternalError(DetailedError):
-    ERROR_MESSAGE = ErrorMessage.EXTERNAL_ERROR
+    error_message = ErrorMessage.EXTERNAL_ERROR
 
 
 class NotAuthenticatedError(DetailedError):
-    ERROR_MESSAGE = ErrorMessage.AUTHENTICATION_ERROR
+    error_message = ErrorMessage.AUTHENTICATION_ERROR

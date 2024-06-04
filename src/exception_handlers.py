@@ -25,8 +25,8 @@ from src.weather_service.exceptions import (
 
 async def email_taken_exception_handler(request: Request, exception: [EmailTakenError]):
     error = ErrorItem(
-        error_code=exception.ERROR_CODE,
-        error_message=exception.ERROR_MESSAGE,
+        error_code=exception.error_code,
+        error_message=exception.error_message,
     )
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
@@ -40,8 +40,8 @@ async def authorization_failed_exception_handler(
     request: Request, exception: [AuthorizationFailedError]
 ):
     error = ErrorItem(
-        error_code=exception.ERROR_CODE,
-        error_message=exception.ERROR_MESSAGE,
+        error_code=exception.error_code,
+        error_message=exception.error_message,
     )
     return JSONResponse(
         status_code=status.HTTP_403_FORBIDDEN,
@@ -63,8 +63,8 @@ async def auth_failed_exception_handler(
     ],
 ):
     error = ErrorItem(
-        error_code=exception.ERROR_CODE,
-        error_message=exception.ERROR_MESSAGE,
+        error_code=exception.error_code,
+        error_message=exception.error_message,
     )
     return JSONResponse(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -82,8 +82,8 @@ async def weather_auth_failed_exception_handler(
     ],
 ):
     error = ErrorItem(
-        error_code=exception.ERROR_CODE,
-        error_message=exception.ERROR_MESSAGE,
+        error_code=exception.error_code,
+        error_message=exception.error_message,
     )
     return JSONResponse(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -97,8 +97,8 @@ async def remote_server_bad_response_failed_exception_handler(
     request: Request, exception: [InvalidResponseError, InvalidSearchError]
 ):
     error = ErrorItem(
-        error_code=exception.ERROR_CODE,
-        error_message=exception.ERROR_MESSAGE,
+        error_code=exception.error_code,
+        error_message=exception.error_message,
     )
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,

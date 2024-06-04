@@ -38,8 +38,8 @@ class Client:
                     raise InvalidTokenError("Remote client authentication issue")
                 raise InvalidResponseError(response.json())
 
-        geo_list = GeocodingList.model_validate_json(response.read())
-        return GeocodingAPIResponse(entries=geo_list)
+            geo_list = GeocodingList.model_validate_json(response.read())
+            return GeocodingAPIResponse(entries=geo_list)
 
     async def get_weather(
         self, coordinate: Coordinates, units: str = "metric"
@@ -57,4 +57,4 @@ class Client:
                     raise InvalidTokenError("Remote client authentication issue")
                 raise InvalidResponseError(response.json())
 
-        return Weather.model_validate_json(response.read())
+            return Weather.model_validate_json(response.read())

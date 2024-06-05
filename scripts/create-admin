@@ -1,0 +1,26 @@
+#!/bin/bash
+
+function usage() {
+  if [ -n "$1" ]; then
+    echo -e "$1\n";
+  fi
+  echo "Usage: $0 [-e email] [-p password]"
+  echo "  -e, --email     User Email"
+  echo "  -p, --password      User password"
+  echo ""
+  exit 1
+}
+
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+  -e|--email) EMAIL="$2"; shift ;;
+  -p|--password) PWD="$2"; shift ;;
+  *) usage "Unknown parameter passed: $1"; exit 1;;
+  esac
+  shift
+done
+
+if [ -z "$EMAIL" ]; then usage "Email is not set"; fi;
+if [ -z "$PWD" ]; then usage "Password id is not set"; fi;
+
+python -m src.tools.create_auth_admin -e $EMAIL -p $PWD

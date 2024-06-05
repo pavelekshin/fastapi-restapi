@@ -38,6 +38,10 @@ class AuthUser(CustomModel):
     password: StrongPassword
 
 
+class AdminUser(AuthUser):
+    is_admin: bool = True
+
+
 class JWTData(CustomModel):
     user_id: Annotated[int, Field(validation_alias="sub")]
     is_admin: bool = False

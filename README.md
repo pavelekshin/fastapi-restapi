@@ -17,6 +17,7 @@
 ├── scripts                       - scripts for container
 │   ├── downgrade
 │   ├── makemigrations
+│   ├── create-admin
 │   ├── migrate
 │   └── start-dev.sh
 └── src                           - global configuration
@@ -40,6 +41,8 @@
     ├── exception_handlers.py     - global exception_handlers
     ├── exceptions.py             - global exceptions
     ├── main.py
+    ├── tools                     - tools for create auth Admin
+    │   └── create_auth_admin.py                       
     ├── models
     │   └── models.py             - global pydantic model
     ├── redis.py                  - global redis configuration
@@ -99,6 +102,12 @@ docker compose exec app migrate
 
 ```shell
 docker compose exec app downgrade -1  # or -2 or base or hash of the migration
+```
+
+- Create user with Admin role
+
+```shell
+docker compose exec app create-admin -e Abc@example.com -p StrongPa$$w0rd  # Create user with Admin role
 ```
 
 ### Swagger UI

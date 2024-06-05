@@ -24,14 +24,14 @@
     │   ├── __init__.py
     │   ├── config.py
     │   ├── constants.py
-    │   ├── dependencies.py - auth dependencies
-    │   ├── exceptions.py   - auth exceptions
-    │   ├── jwt.py          - jwt configuration
+    │   ├── dependencies.py       - auth dependencies
+    │   ├── exceptions.py         - auth exceptions
+    │   ├── jwt.py                - jwt configuration
     │   ├── router.py         
-    │   ├── schemas.py      - pydantic schema
-    │   ├── security.py     - security stuff
-    │   ├── service.py      - service logic
-    │   └── utils.py        - stuff
+    │   ├── schemas.py            - pydantic schema
+    │   ├── security.py           - security stuff
+    │   ├── service.py            - service logic
+    │   └── utils.py              - stuff
     ├── config                      
     │   └── config.py
     ├── constants.py              - global constants
@@ -40,7 +40,7 @@
     ├── exceptions.py             - global exceptions
     ├── main.py
     ├── models
-    │   └── models.py       - global pydantic model
+    │   └── models.py             - global pydantic model
     ├── redis.py
     ├── settings.py
     └── weather_service           - weather service modul

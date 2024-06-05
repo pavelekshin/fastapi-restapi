@@ -13,6 +13,7 @@
 ├── logging.ini
 ├── requirements.txt
 ├── ruff.toml
+├── env
 ├── scripts                       - scripts for container
 │   ├── downgrade
 │   ├── makemigrations
@@ -41,8 +42,8 @@
     ├── main.py
     ├── models
     │   └── models.py             - global pydantic model
-    ├── redis.py
-    ├── settings.py
+    ├── redis.py                  - global redis configuration
+    ├── settings.py               - global settings 
     └── weather_service           - weather service modul
         ├── __init__.py
         ├── client.py             - weather client

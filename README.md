@@ -1,6 +1,58 @@
 # FastAPI RESTAPI Example Project
 
 - well-structured easy to understand and scale-up project structure
+
+
+```bash
+.
+├── Dockerfile
+├── README.md
+├── alembic
+├── alembic.ini
+├── docker-compose.yml
+├── logging.ini
+├── requirements.txt
+├── ruff.toml
+├── scripts                       - scripts for container
+│   ├── downgrade
+│   ├── makemigrations
+│   ├── migrate
+│   └── start-dev.sh
+└── src                           - global configuration
+    ├── __init__.py
+    ├── auth                      - auth modul 
+    │   ├── __init__.py
+    │   ├── config.py
+    │   ├── constants.py
+    │   ├── dependencies.py - auth dependencies
+    │   ├── exceptions.py   - auth exceptions
+    │   ├── jwt.py          - jwt configuration
+    │   ├── router.py         
+    │   ├── schemas.py      - pydantic schema
+    │   ├── security.py     - security stuff
+    │   ├── service.py      - service logic
+    │   └── utils.py        - stuff
+    ├── config                      
+    │   └── config.py
+    ├── constants.py              - global constants
+    ├── database.py               - db settings
+    ├── exception_handlers.py     - global exception_handlers
+    ├── exceptions.py             - global exceptions
+    ├── main.py
+    ├── models
+    │   └── models.py       - global pydantic model
+    ├── redis.py
+    ├── settings.py
+    └── weather_service           - weather service modul
+        ├── __init__.py
+        ├── client.py             - weather client
+        ├── constants.py          - weather constants
+        ├── exceptions.py         - weather exceptions
+        ├── helper.py             - helper func
+        ├── router.py             - weather routers
+        └── schemas.py            - pydantic schema
+
+```
 - async IO operations
 - easy local development
     - Dockerfile optimized for small size and fast builds with a non-root user

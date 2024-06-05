@@ -13,7 +13,7 @@
 ├── logging.ini
 ├── requirements.txt
 ├── ruff.toml
-├── env
+├── .env
 ├── scripts                       - scripts for container
 │   ├── downgrade
 │   ├── makemigrations

@@ -18,7 +18,7 @@ router = APIRouter()
 
 @router.post("/users", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def register_user(
-    auth_data: AuthUser = Depends(valid_user_create),
+    auth_data: Annotated[AuthUser, Depends(valid_user_create)],
 ) -> dict[str, str]:
     user = await service.create_user(auth_data)
     return {
@@ -29,7 +29,7 @@ async def register_user(
 
 @router.get("/users/me", response_model=UserResponse)
 async def get_my_account(
-    jwt_data: JWTData = Depends(parse_jwt_user_data),
+    jwt_data: Annotated[JWTData, Depends(parse_jwt_user_data)],
 ) -> dict[str, str]:
     user = await service.get_user_by_id(jwt_data.user_id)
     return jsonable_encoder(user)
@@ -37,7 +37,7 @@ async def get_my_account(
 
 @router.get("/users/tokeninfo", response_model=JWTData)
 async def get_token_info(
-    jwt_data: JWTData = Depends(parse_jwt_user_data),
+    jwt_data: Annotated[JWTData, Depends(parse_jwt_user_data)],
 ) -> JWTData:
     return jwt_data
 
@@ -77,8 +77,8 @@ async def auth_user(response: Response, auth_data: AuthUser) -> AccessTokenRespo
 async def refresh_tokens(
     worker: BackgroundTasks,
     response: Response,
-    refresh_token: dict[str, Any] = Depends(valid_refresh_token),
-    user: dict[str, Any] = Depends(valid_refresh_token_user),
+    refresh_token: Annotated[dict[str, Any], Depends(valid_refresh_token)],
+    user: Annotated[dict[str, Any], Depends(valid_refresh_token_user)],
 ) -> AccessTokenResponse:
     refresh_token_value = await service.create_refresh_token(
         user_id=refresh_token["user_id"]
@@ -95,7 +95,7 @@ async def refresh_tokens(
 @router.delete("/users/tokens")
 async def logout_user(
     response: Response,
-    refresh_token: dict[str, Any] = Depends(valid_refresh_token),
+    refresh_token: Annotated[dict[str, Any], Depends(valid_refresh_token)],
 ) -> None:
     await service.expire_refresh_token(refresh_token["uuid"])
 

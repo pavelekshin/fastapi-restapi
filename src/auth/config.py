@@ -1,4 +1,7 @@
+from dotenv import load_dotenv, find_dotenv
 from pydantic_settings import BaseSettings
+
+load_dotenv(find_dotenv(".env"))
 
 
 class AuthConfig(BaseSettings):

@@ -1,5 +1,6 @@
 import asyncio
 from asyncio import Task
+from typing import Annotated
 
 from fastapi import APIRouter, BackgroundTasks, Depends
 from fastapi.encoders import jsonable_encoder
@@ -34,7 +35,7 @@ router = APIRouter(
 @cache(seconds=60)
 async def get_location(
     request: Request,
-    loc: Location = Depends(),
+    loc: Annotated[Location, Depends()],
 ):
     client = Client()
     response: GeocodingAPIResponse = await client.get_location(loc)
@@ -50,7 +51,7 @@ async def get_location(
 @cache(seconds=60)
 async def get_weather_by_location(
     request: Request,
-    coordinate: Coordinates = Depends(),
+    coordinate: Annotated[Coordinates, Depends()],
 ):
     client = Client()
     response: Weather = await client.get_weather(coordinate)
@@ -70,7 +71,7 @@ async def get_weather_by_location(
 @cache(seconds=60)
 async def get_weather_by_location_name(
     request: Request,
-    loc: Location = Depends(),
+    loc: Annotated[Location, Depends()],
 ):
     client = Client()
     response: GeocodingAPIResponse = await client.get_location(loc)

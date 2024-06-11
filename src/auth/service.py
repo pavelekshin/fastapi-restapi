@@ -3,14 +3,18 @@ from datetime import datetime, timedelta
 from typing import Any
 
 from pydantic import UUID4
-from sqlalchemy import insert, select, update
+from sqlalchemy import delete, insert, select, update
 
 from src.auth.config import auth_config
-from src.auth.exceptions import InvalidCredentialsError
-from src.auth.schemas import AuthUser
+from src.auth.exceptions import (
+    InvalidCredentialsError,
+    InvalidEmailError,
+    InvalidUserIDError,
+)
+from src.auth.schemas import AuthUser, UpdateUser
 from src.auth.security import check_password, hash_password
 from src.auth.utils import get_token
-from src.database import auth_user, execute, fetch_one, refresh_tokens
+from src.database import auth_user, execute, fetch_all, fetch_one, refresh_tokens
 
 
 async def create_user(user: AuthUser) -> dict[str, Any] | None:
@@ -27,6 +31,57 @@ async def create_user(user: AuthUser) -> dict[str, Any] | None:
     )
 
     return await fetch_one(insert_query)
+
+
+async def update_user(user_id: int, user_data: UpdateUser) -> dict[str, Any] | None:
+    user = await get_user_by_id(user_id)
+    if not user:
+        raise InvalidUserIDError()
+
+    data = {
+        "updated_at": datetime.now(),
+    }
+
+    if user_data.email:
+        data.update(
+            {
+                "email": user_data.email,
+            }
+        )
+    if user_data.password:
+        data.update(
+            {
+                "password": hash_password(user_data.password),
+            }
+        )
+    if user_data.is_admin is not None:
+        data.update(
+            {
+                "is_admin": user_data.is_admin,
+            }
+        )
+
+    update_query = (
+        update(auth_user)
+        .values(**data)
+        .filter(auth_user.c.id == user_id)
+        .returning(auth_user)
+    )
+    return await fetch_one(update_query)
+
+
+async def all_users():
+    return await fetch_all(select(auth_user.c))
+
+
+async def delete_user(user_id: int) -> None:
+    user = await get_user_by_id(user_id)
+    if not user:
+        raise InvalidEmailError()
+
+    delete_query = delete(auth_user).filter(auth_user.c.id == user_id)
+
+    await execute(delete_query)
 
 
 async def get_user_by_id(user_id: int) -> dict[str, Any] | None:

@@ -6,6 +6,14 @@ class EmailTakenError(BadRequestError):
     error_code = ErrorCode.EMAIL_TAKEN
 
 
+class InvalidEmailError(BadRequestError):
+    error_code = ErrorCode.INVALID_USERNAME
+
+
+class InvalidUserIDError(BadRequestError):
+    error_code = ErrorCode.INVALID_USERID
+
+
 class AuthorizationFailedError(PermissionDeniedError):
     error_code = ErrorCode.AUTHORIZATION_FAILED
 

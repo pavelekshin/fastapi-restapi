@@ -5,6 +5,7 @@ class ErrorCode:
     INVALID_USERNAME = "Invalid email."
     INVALID_PASSWORD = "Invalid password."
     INVALID_CREDENTIALS = "Invalid credentials."
+    INVALID_USERID = "Invalid ID taken."
     FORM_VALIDATION_FAILED = "User form validation failed"
     EMAIL_TAKEN = "Email is already taken."
     REFRESH_TOKEN_NOT_VALID = "Refresh token is not valid."

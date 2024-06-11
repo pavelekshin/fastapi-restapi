@@ -11,7 +11,9 @@ from src.auth.exceptions import (
     EmailTakenError,
     FormValidationError,
     InvalidCredentialsError,
+    InvalidEmailError,
     InvalidTokenError,
+    InvalidUserIDError,
     NotAuthenticatedError,
     RefreshTokenNotFoundError,
     RefreshTokenNotValidError,
@@ -23,7 +25,10 @@ from src.weather_service.exceptions import (
 )
 
 
-async def email_taken_exception_handler(request: Request, exception: [EmailTakenError]):
+async def email_taken_exception_handler(
+    request: Request,
+    exception: [EmailTakenError, InvalidEmailError, InvalidUserIDError],
+):
     error = ErrorItem(
         error_code=exception.error_code,
         error_message=exception.error_message,
@@ -142,6 +147,8 @@ def register_error_handlers(app: FastAPI) -> None:
         AuthorizationFailedError, authorization_failed_exception_handler
     )
     app.add_exception_handler(EmailTakenError, email_taken_exception_handler)
+    app.add_exception_handler(InvalidEmailError, email_taken_exception_handler)
+    app.add_exception_handler(InvalidUserIDError, email_taken_exception_handler)
     app.add_exception_handler(
         InvalidResponseError, remote_server_bad_response_failed_exception_handler
     )

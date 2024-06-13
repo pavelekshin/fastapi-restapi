@@ -27,6 +27,16 @@ services:
       - app_pg_data_backups:/backups
     expose:
       - 5432
+  test_db:
+    container_name: app_weather_testdb
+    hostname: app_weather_testdb
+    image: postgres:16-alpine3.19
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: app_weather_testdb
+    expose:
+      - 5432
   app_redis:
     image: redis:6.2-alpine
     hostname: app_weather_redis

@@ -41,13 +41,6 @@ def upgrade() -> None:
                     sa.PrimaryKeyConstraint('uuid', name=op.f('pk_auth_refresh_token'))
                     )
 
-    superuser = {
-        "username": "superuser",
-        "password": "superuser",
-        "is_admin": True,
-    }
-
-    op.bulk_insert("auth_user", [{**superuser}])
     # ### end Alembic commands ###
 
 

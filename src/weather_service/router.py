@@ -2,9 +2,9 @@ import asyncio
 from asyncio import Task
 from typing import Annotated
 
-from fastapi.logger import logger
 from fastapi import APIRouter, BackgroundTasks, Depends
 from fastapi.encoders import jsonable_encoder
+from fastapi.logger import logger
 from starlette import status
 from starlette.requests import Request
 from starlette.responses import JSONResponse
@@ -25,7 +25,6 @@ from src.weather_service.schemas import (
 router = APIRouter(
     dependencies=[Depends(BackgroundTasks()), Depends(parse_jwt_user_data)]
 )
-
 
 
 @router.get(

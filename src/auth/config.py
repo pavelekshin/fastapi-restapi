@@ -1,10 +1,7 @@
-from dotenv import find_dotenv, load_dotenv
-from pydantic_settings import BaseSettings
-
-load_dotenv(find_dotenv(".env"))
+from src.models.models import CustomSettings
 
 
-class AuthConfig(BaseSettings):
+class AuthConfig(CustomSettings):
     JWT_ALG: str
     JWT_SECRET: str
     JWT_EXP: int = 5  # minutes

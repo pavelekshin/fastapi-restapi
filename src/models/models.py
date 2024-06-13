@@ -1,7 +1,9 @@
 import datetime
 from typing import Any
 
+from dotenv import find_dotenv
 from pydantic import BaseModel, ConfigDict, model_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class CustomModel(BaseModel):
@@ -20,3 +22,10 @@ class CustomModel(BaseModel):
         }
 
         return {**data, **datetime_fields}
+
+
+class CustomSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=find_dotenv(".env"),
+        extra="ignore",
+    )

@@ -1,10 +1,9 @@
 from typing import Any
 
-from dotenv import find_dotenv, load_dotenv
 from pydantic import PostgresDsn, RedisDsn
-from pydantic_settings import BaseSettings
 
 from src.constants import Environment
+from src.models.models import CustomSettings
 
 
 class SqlAlchemyConfig:
@@ -52,10 +51,7 @@ class PostgreSQL(SqlAlchemyConfig):
         self.DATABASE_URL = url
 
 
-load_dotenv(find_dotenv(".env"))
-
-
-class BaseConfig(BaseSettings):
+class BaseConfig(CustomSettings):
     REDIS_URL: RedisDsn
     DATABASE_URL: PostgresDsn
     WEATHER_SERVICE_APIKEY: str

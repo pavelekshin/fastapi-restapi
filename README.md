@@ -72,7 +72,8 @@
     - migrations set in easy to understand format (`YYYY-MM-DD_HHmm_rev_slug`)
 - SQLAlchemy Core query
 - OAuth2 JWT with refresh token
-- cookies based updated token (http-only)
+- Token based admin authorization
+- cookies based token update (http-only)
 - salted password storage with `bcrypt`
 - redis cache
 - pydantic model

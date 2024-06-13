@@ -5,8 +5,8 @@ import pytest
 import pytest_asyncio
 from async_asgi_testclient import TestClient
 from pytest_asyncio import is_async_test
+
 from src.main import app
-from src.settings import settings
 
 
 # https://pytest-asyncio.readthedocs.io/en/latest/how-to-guides/run_session_tests_in_same_loop.html
@@ -19,7 +19,6 @@ def pytest_collection_modifyitems(items):
 
 @pytest.fixture(autouse=True, scope="session")
 def run_migration():
-    print(settings)
     os.system("alembic upgrade head")
     yield
     os.system("alembic downgrade base")

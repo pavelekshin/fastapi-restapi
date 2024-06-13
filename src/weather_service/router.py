@@ -2,6 +2,7 @@ import asyncio
 from asyncio import Task
 from typing import Annotated
 
+from fastapi.logger import logger
 from fastapi import APIRouter, BackgroundTasks, Depends
 from fastapi.encoders import jsonable_encoder
 from starlette import status
@@ -24,6 +25,7 @@ from src.weather_service.schemas import (
 router = APIRouter(
     dependencies=[Depends(BackgroundTasks()), Depends(parse_jwt_user_data)]
 )
+
 
 
 @router.get(
@@ -86,10 +88,10 @@ async def get_weather_by_location_name(
                 )
                 for geo in entries
             ]
-    except ExceptionGroup:
-        pass
-    except BaseExceptionGroup:
-        pass
+    except ExceptionGroup as exc:
+        logger.error(exc.message, exc.exceptions)
+    except BaseExceptionGroup as exc:
+        logger.error(exc.message, exc.exceptions)
 
     responses = [done.result() for done in tasks]
 

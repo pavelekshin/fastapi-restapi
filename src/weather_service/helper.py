@@ -1,6 +1,6 @@
 from functools import wraps
 
-import fastapi.logger
+from fastapi.logger import logger
 from fastapi import BackgroundTasks
 from redis.exceptions import ConnectionError
 from starlette.requests import Request
@@ -8,7 +8,6 @@ from starlette.responses import JSONResponse, Response
 
 from src.redis import RedisData, get_by_key, set_redis_key
 
-logger = fastapi.logger.logger
 
 
 def cache(seconds):

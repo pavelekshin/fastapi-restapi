@@ -1,7 +1,6 @@
-# FastAPI RESTAPI Example Project
+# FastAPI RESTful Example Project
 
 - well-structured easy to understand and scale-up project structure
-
 
 ```bash
 .
@@ -10,6 +9,7 @@
 ├── alembic
 ├── alembic.ini
 ├── docker-compose.yml
+├── pytest.ini
 ├── logging.ini
 ├── requirements.txt
 ├── ruff.toml
@@ -20,6 +20,10 @@
 │   ├── create-admin
 │   ├── migrate
 │   └── start-dev.sh
+├── tests                         - tests
+│   ├── __init__.py
+│   ├── auth                      - auth modul tests
+│   └──conftest.py
 └── src                           - global configuration
     ├── __init__.py
     ├── auth                      - auth modul 
@@ -57,6 +61,7 @@
         └── schemas.py            - pydantic schema
 
 ```
+
 - async IO operations
 - easy local development
     - Dockerfile optimized for small size and fast builds with a non-root user
@@ -71,6 +76,7 @@
 - salted password storage with `bcrypt`
 - redis cache
 - pydantic model
+- pytest
 - linters / format with ruff
 - FastAPI dependencies and background task
 - and some other extras, like global custom exceptions, index naming convention, shortcut scripts for alembic, pydantic
@@ -114,4 +120,10 @@ docker compose exec app create-admin -e Abc@example.com -p StrongPa$$w0rd  # Cre
 
 ```shell
 http://localhost:15000/docs
+```
+
+### Pytest
+
+```shell
+docker compose exec app pytest -v
 ```

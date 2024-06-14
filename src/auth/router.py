@@ -21,6 +21,7 @@ from src.auth.schemas import (
     UpdateUser,
     UserResponse,
 )
+from src.constants import Tags
 
 router = APIRouter()
 
@@ -31,6 +32,7 @@ router = APIRouter()
     response_model=UserResponse,
     response_model_exclude={"id"},
     status_code=status.HTTP_201_CREATED,
+    tags=[Tags.AUTH],
 )
 async def register_user(
     auth_data: Annotated[AuthUser, Depends(valid_user_create)],
@@ -39,7 +41,12 @@ async def register_user(
     return jsonable_encoder(user)
 
 
-@router.get("/users/me", response_model_exclude_none=True, response_model=UserResponse)
+@router.get(
+    "/users/me",
+    response_model_exclude_none=True,
+    response_model=UserResponse,
+    tags=[Tags.AUTH],
+)
 async def my_account(
     jwt_data: Annotated[JWTData, Depends(parse_jwt_user_data)],
 ) -> dict[str, str]:
@@ -47,7 +54,11 @@ async def my_account(
     return jsonable_encoder(user)
 
 
-@router.get("/users/tokeninfo", response_model=JWTData)
+@router.get(
+    "/users/tokeninfo",
+    response_model=JWTData,
+    tags=[Tags.AUTH],
+)
 async def token_info(
     jwt_data: Annotated[JWTData, Depends(parse_jwt_user_data)],
 ) -> JWTData:
@@ -56,10 +67,11 @@ async def token_info(
 
 @router.patch(
     "/{user_id}/update",
-    response_model=UserResponse,
-    response_model_exclude_none=True,
-    status_code=status.HTTP_200_OK,
     dependencies=[Depends(validate_admin_access)],
+    response_model_exclude_none=True,
+    response_model=UserResponse,
+    status_code=status.HTTP_200_OK,
+    tags=[Tags.ADMIN],
 )
 async def update_user(
     user_id: Annotated[
@@ -113,6 +125,7 @@ async def update_user(
     response_model_exclude_none=True,
     response_model=list[UserResponse],
     status_code=status.HTTP_200_OK,
+    tags=[Tags.ADMIN],
 )
 async def all_users() -> list[UserResponse]:
     return [UserResponse(**user) for user in await service.all_users()]
@@ -122,6 +135,7 @@ async def all_users() -> list[UserResponse]:
     "/{user_id}/delete",
     dependencies=[Depends(validate_admin_access)],
     status_code=status.HTTP_200_OK,
+    tags=[Tags.ADMIN],
 )
 async def delete_user(
     user_id: Annotated[
@@ -136,7 +150,10 @@ async def delete_user(
 
 
 @router.post(
-    "/users/signin", response_model=AccessTokenResponse, include_in_schema=False
+    "/users/signin",
+    response_model=AccessTokenResponse,
+    include_in_schema=False,
+    tags=[Tags.AUTH],
 )
 async def auth_swagger(
     response: Response,
@@ -153,7 +170,11 @@ async def auth_swagger(
     )
 
 
-@router.post("/users/tokens", response_model=AccessTokenResponse)
+@router.post(
+    "/users/tokens",
+    response_model=AccessTokenResponse,
+    tags=[Tags.AUTH],
+)
 async def auth_user(response: Response, auth_data: AuthUser) -> AccessTokenResponse:
     user = await service.authenticate_user(auth_data)
     refresh_token_value = await service.create_refresh_token(user_id=user["id"])
@@ -166,7 +187,11 @@ async def auth_user(response: Response, auth_data: AuthUser) -> AccessTokenRespo
     )
 
 
-@router.put("/users/tokens", response_model=AccessTokenResponse)
+@router.put(
+    "/users/tokens",
+    response_model=AccessTokenResponse,
+    tags=[Tags.AUTH],
+)
 async def refresh_tokens(
     worker: BackgroundTasks,
     response: Response,
@@ -185,7 +210,10 @@ async def refresh_tokens(
     )
 
 
-@router.delete("/users/tokens")
+@router.delete(
+    "/users/tokens",
+    tags=[Tags.AUTH],
+)
 async def logout_user(
     response: Response,
     refresh_token: Annotated[dict[str, Any], Depends(valid_refresh_token)],

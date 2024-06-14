@@ -8,6 +8,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from src import redis
 from src.auth.router import router as auth_router
+from src.constants import Tags
 from src.exception_handlers import register_error_handlers
 from src.settings import app_configs, settings
 from src.weather_service.router import router as weather_service_router
@@ -38,11 +39,11 @@ app.add_middleware(
     allow_headers=settings.CORS_HEADERS,
 )
 
-app.include_router(auth_router, prefix="/auth", tags=["Auth"])
+app.include_router(auth_router, prefix="/auth")
 app.include_router(
     weather_service_router,
     prefix="/weather-service",
-    tags=["Weather Service Calls"],
+    tags=[Tags.WEATHER],
 )
 register_error_handlers(app=app)
 

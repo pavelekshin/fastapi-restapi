@@ -1,6 +1,12 @@
 from enum import Enum
 
 
+class Tags(Enum):
+    AUTH = "Auth"
+    ADMIN = "Admin"
+    WEATHER = "Weather Service Calls"
+
+
 class ErrorCode:
     INTERNAL_SERVER_ERROR = "Internal Server error"
 

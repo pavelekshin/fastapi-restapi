@@ -88,9 +88,9 @@ async def get_weather_by_location_name(
                 for geo in entries
             ]
     except ExceptionGroup as exc:
-        logger.error(exc.message, exc.exceptions)
+        logger.error(exc.message)
     except BaseExceptionGroup as exc:
-        logger.error(exc.message, exc.exceptions)
+        logger.error(exc.message)
 
     responses = [done.result() for done in tasks]
 

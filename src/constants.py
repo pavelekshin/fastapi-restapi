@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class Tags(Enum):
+class Tags(str, Enum):
     AUTH = "Auth"
     ADMIN = "Admin"
     WEATHER = "Weather Service Calls"

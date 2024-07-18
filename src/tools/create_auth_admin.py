@@ -1,8 +1,6 @@
 import argparse
 import asyncio
 
-from sqlalchemy import insert
-
 from src.auth.schemas import AdminUser
 from src.auth.security import hash_password
 from src.auth.service import get_user_by_email
@@ -14,7 +12,7 @@ async def create_auth_admin_user(user: AdminUser):
         raise ValueError(f"User with email {user.email} already exist")
 
     insert_superuser = (
-        insert(auth_user)
+        auth_user.insert()
         .values(
             {
                 "email": user.email,

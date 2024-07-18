@@ -35,7 +35,7 @@ DATABASE_URL = str(settings.DATABASE_URL)
 engine = async_engine_from_config(db_settings.config)
 metadata = MetaData(naming_convention=DB_NAMING_CONVENTION)
 
-auth_user = Table(
+auth_user: Table = Table(
     "auth_user",
     metadata,
     Column("id", Integer, Identity(), primary_key=True),
@@ -47,7 +47,7 @@ auth_user = Table(
     Column("time_at", DateTime, onupdate=func.now()),
 )
 
-refresh_tokens = Table(
+refresh_tokens: Table = Table(
     "auth_refresh_token",
     metadata,
     Column("uuid", UUID, primary_key=True),

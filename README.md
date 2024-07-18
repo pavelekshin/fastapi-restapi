@@ -1,4 +1,4 @@
-# FastAPI RESTful Example Project
+# FastAPI RESTful API
 
 - well-structured easy to understand and scale-up project structure
 
